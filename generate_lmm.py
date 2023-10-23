@@ -26,7 +26,7 @@ for packed in inds:
     M = M_array[j]
     print('%s_%s'%(N,M))
 
-    dt = h5py.File('data/am/%s_%s.hdf5'%(N,M),'w')
+    dt = h5py.File('data/lmm/%s_%s.hdf5'%(N,M),'w')
 
     s_g = np.sqrt(np.random.uniform(0,1))
     s_e = np.sqrt(1-s_g**2)
