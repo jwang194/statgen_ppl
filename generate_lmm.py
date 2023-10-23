@@ -8,10 +8,10 @@ import h5py
 
 min_N = int(sys.argv[1])
 max_N = int(sys.argv[2])
-N_t = (max_N - min_N)**2
+N_t = (max_N - min_N)*2
 min_M = int(sys.argv[3])
 max_M = int(sys.argv[4])
-M_t = (max_M - min_M)**2
+M_t = (max_M - min_M)*2
 N_array = np.concatenate([[10**i,5*10**i] for i in range(min_N,max_N)])
 M_array = np.concatenate([[10**i,5*10**i] for i in range(min_M,max_M)])
 t = max(N_t,M_t)
