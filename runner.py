@@ -2,8 +2,6 @@
 import sys
 import os
 
-os.environ["XLA_PYTHON_CLIENT_PREALLOCATE"]="false"
-
 import functools
 import collections
 import contextlib
@@ -15,9 +13,6 @@ from jax import random
 import jax.numpy as jnp
 
 import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-import tensorflow_datasets as tfds
 
 from tensorflow_probability.substrates import jax as tfp
 

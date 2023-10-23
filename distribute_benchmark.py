@@ -1,5 +1,4 @@
 # !pip install seaborn --target=/kaggle/working/mysitepackages
-
 import sys
 import time
 
@@ -14,19 +13,12 @@ from jax import random
 import jax.numpy as jnp
 
 import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
 import h5py
-import tensorflow_datasets as tfds
 
 from itertools import product
-from timeit import timeit
 from tensorflow_probability.substrates import jax as tfp
 from runner import run_wrapper
 from models import *
-
-from jax_smi import initialise_tracking
-initialise_tracking()
 
 tfd = tfp.distributions
 tfb = tfp.bijectors
@@ -63,6 +55,7 @@ for packed in inds:
     def shard(data_array):
         split_data = [np.array(d).reshape((jax.device_count(),-1,*d.shape[1:])) for d in data_array]
         return(tuple(split_data))
+        # return(tuple([jax.pmap(lambda x: x)(s) for s in split_data]))
 
     sharded_data = shard([dt['data'][k] for k in dt['data_keys']])
     pass_data = sharded_data[-dt['n_comp'][0]:]
@@ -72,7 +65,7 @@ for packed in inds:
     start_time = time.perf_counter()
     states, trace = run(random.PRNGKey(0),sharded_data,pass_data)
     end_time = time.perf_counter()
-    print('%s,%s\t%s,%s'%(str(N),str(M),str(start_time),str(end_time)))
+    # print('%s,%s\t%s,%s'%(str(N),str(M),str(start_time),str(end_time)))
     # runtime = timeit('run(random.PRNGKey(0), (sharded_X, sharded_y))',number=1)
 
     n_param = len(dt['param_keys'])
