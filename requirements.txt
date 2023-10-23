@@ -1,0 +1,6 @@
+h5py==3.10.0
+jax[cuda12_pip] -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+https://storage.googleapis.com/jax-releases/cuda12/jaxlib-0.4.19%2Bcuda12.cudnn89-cp39-cp39-manylinux2014_x86_64.whl
+numpy==1.24.3
+tensorflow[and-cuda]==2.13.0
+tensorflow-probability==0.21.0
