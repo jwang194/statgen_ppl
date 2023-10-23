@@ -6,7 +6,7 @@ import functools
 import collections
 import contextlib
 
-os.environ['CUDA_VISIBLE_DEVICES'] = ','.join([str(r) for r in range(sys.argv[2])])
+os.environ['CUDA_VISIBLE_DEVICES'] = ','.join([str(r) for r in range(int(sys.argv[2]))])
 
 import jax
 import jax.numpy as jnp
