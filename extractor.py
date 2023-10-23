@@ -4,7 +4,7 @@ import numpy as np
 
 from utils import array_maker
 
-N_array,M_array,inds,vals = array_maker(*[int(s) for s in sys.argv[2:]])
+N_array,M_array,inds,vals = array_maker(*[int(s) for s in sys.argv[3:]])
 
 runtimes = []
 model_type = sys.argv[1]
@@ -18,4 +18,4 @@ for packed in inds:
 
     runtimes.append(dt['runtime'][()])
 
-np.savetxt('data/%s/%s_%s_%s_%s.txt'%(tuple(sys.argv[1:])),np.array(runtimes))
+np.savetxt('data/%s/%sGPU_%s_%s_%s_%s.txt'%(tuple(sys.argv[1:])),np.array(runtimes))

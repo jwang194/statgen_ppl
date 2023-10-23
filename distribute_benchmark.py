@@ -1,10 +1,12 @@
-# !pip install seaborn --target=/kaggle/working/mysitepackages
+import os
 import sys
 import time
 
 import functools
 import collections
 import contextlib
+
+os.environ['CUDA_VISIBLE_DEVICES'] = ','.join([str(r) for r in range(sys.argv[2])])
 
 import jax
 import jax.numpy as jnp
@@ -21,7 +23,7 @@ from utils import array_maker
 from runner import run_wrapper
 from models import *
 
-N_array,M_array,inds,vals = array_maker(*[int(s) for s in sys.argv[2:]])
+N_array,M_array,inds,vals = array_maker(*[int(s) for s in sys.argv[3:]])
 
 model_type = sys.argv[1]
 for packed in inds:
