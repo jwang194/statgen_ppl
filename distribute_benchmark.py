@@ -20,15 +20,6 @@ from tensorflow_probability.substrates import jax as tfp
 from runner import run_wrapper
 from models import *
 
-tfd = tfp.distributions
-tfb = tfp.bijectors
-tfm = tfp.mcmc
-tfed = tfp.experimental.distribute
-tfde = tfp.experimental.distributions
-tfem = tfp.experimental.mcmc
-
-Root = tfed.JointDistributionCoroutine.Root
-
 min_N = int(sys.argv[2])
 max_N = int(sys.argv[3])
 N_t = (max_N - min_N)*2
@@ -54,7 +45,6 @@ for packed in inds:
 
     def shard(data_array):
         split_data = [np.array(d).reshape((jax.device_count(),-1,*d.shape[1:])) for d in data_array]
-        # return(tuple(split_data))
         return(tuple([jax.pmap(lambda x: x)(s) for s in split_data]))
 
     sharded_data = shard([dt['data'][k] for k in dt['data_keys']])
