@@ -24,7 +24,6 @@ for packed in inds:
     i,j = [int(p) for p in packed.split(',')]
     N = N_array[i]
     M = M_array[j]
-    print('%s_%s'%(N,M))
 
     dt = h5py.File('data/am/%s_%s.hdf5'%(N,M),'w')
 

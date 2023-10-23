@@ -54,8 +54,8 @@ for packed in inds:
 
     def shard(data_array):
         split_data = [np.array(d).reshape((jax.device_count(),-1,*d.shape[1:])) for d in data_array]
-        return(tuple(split_data))
-        # return(tuple([jax.pmap(lambda x: x)(s) for s in split_data]))
+        # return(tuple(split_data))
+        return(tuple([jax.pmap(lambda x: x)(s) for s in split_data]))
 
     sharded_data = shard([dt['data'][k] for k in dt['data_keys']])
     pass_data = sharded_data[-dt['n_comp'][0]:]
