@@ -1,3 +1,4 @@
+import os
 import sys
 import functools
 import collections
@@ -14,6 +15,9 @@ for packed in inds:
     i,j = [int(p) for p in packed.split(',')]
     N = N_array[i]
     M = M_array[j]
+
+    if os.path.isfile('data/lmm/%s_%s.hdf5'%(N,M)):
+        continue
 
     dt = h5py.File('data/lmm/%s_%s.hdf5'%(N,M),'w')
 
