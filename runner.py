@@ -1,6 +1,7 @@
 # !pip install seaborn --target=/kaggle/working/mysitepackages
 import sys
 import os
+from typing import Any, Hashable, List, Iterable, Callable, Union, Dict
 
 import functools
 import collections
@@ -29,7 +30,10 @@ def run_wrapper(model_wrapper):
     # set up the sharded markov chain
     @functools.partial(jax.pmap, axis_name='data', in_axes=(None, 0, 0), out_axes=None)
     # @jax.default_matmul_precision('tensorfloat32')
-    def run(seed, data, pass_data):
+    def run(seed, 
+            data: Iterable,      ## data used to specify likelyhood which is X and y in this case (same as below)
+            pass_data: Iterable, ## pass data = data used to compute likelyhood which is X and y in this case
+           ): 
         model_fn = model_wrapper(*data)
         model = tfed.JointDistributionCoroutine(model_fn)
 
