@@ -23,6 +23,8 @@ from utils import array_maker
 from runner import run_wrapper
 from models import *
 
+N_GPU = int(sys.argv[2])
+
 N_array,M_array,inds,vals = array_maker(*[int(s) for s in sys.argv[3:]])
 
 model_type = sys.argv[1]
@@ -50,7 +52,7 @@ for packed in inds:
     # runtime = timeit('run(random.PRNGKey(0), (sharded_X, sharded_y))',number=1)
 
     n_param = len(dt['param_keys'])
-    dt.create_dataset('runtime',data=float(end_time - start_time))
+    dt.create_dataset('runtime_%i_GPU'%N_GPU,data=float(end_time - start_time))
     for i in range(n_param):
         k = dt['param_keys'][i]
-        dt['errors'].create_dataset(k,data=(states[i].mean(0) - dt['params'][k][()]))
+        dt['errors'].create_dataset('%i_%i_GPU'%(k,N_GPU),data=(states[i].mean(0) - dt['params'][k][()]))
