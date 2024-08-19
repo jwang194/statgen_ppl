@@ -4,6 +4,7 @@ import numpy as np
 
 from utils import array_maker
 
+N_GPU = int(sys.argv[2])
 N_array,M_array,inds,vals = array_maker(*[int(s) for s in sys.argv[3:]])
 
 runtimes = []
@@ -16,6 +17,6 @@ for packed in inds:
     dt_file = 'data/%s/%s_%s.hdf5'%(model_type,N,M)
     dt = h5py.File(dt_file,'r')
 
-    runtimes.append(dt['runtime'][()])
+    runtimes.append(dt['runtime_%i_GPU'%N_GPU][()])
 
 np.savetxt('data/%s/%sGPU_%s_%s_%s_%s.txt'%(tuple(sys.argv[1:])),np.array(runtimes))
