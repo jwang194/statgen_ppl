@@ -31,8 +31,8 @@ def am_wrapper(true_X,y):
     n,m = true_X.shape
     Root = tfed.JointDistributionCoroutine.Root
     def model():
-        s_g = yield Root(tfd.HalfCauchy(0.,1.))
-        s_e = yield Root(tfd.HalfCauchy(0.,1.))
+        s_g = yield Root(tfd.HalfCauchy(0.,.5))
+        s_e = yield Root(tfd.HalfCauchy(0.,.5))
         alpha = yield Root(tfd.HalfCauchy(0.,.2))
         beta = yield Root(tfd.MultivariateNormalDiag(jnp.zeros(m),s_g*jnp.ones(m)))
         X = yield Root(tfed.Sharded(tfd.Sample(tfd.MultivariateNormalDiagPlusLowRankCovariance(jnp.zeros(m),jnp.ones(m),jnp.sqrt(alpha)*beta[:,None]),sample_shape=n),shard_axis_name='data'))

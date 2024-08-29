@@ -1,4 +1,4 @@
-python3 generate_lmm.py ${2} ${3} ${4} ${5}
+python3 generate_lmm.py ${1} ${2} ${3} ${4} ${5}
 echo "Data generated."
 python3 distribute_benchmark.py 'lmm' ${1} ${2} ${3} ${4} ${5}
 echo "Inference completed."

@@ -25,7 +25,7 @@ from models import *
 
 N_GPU = int(sys.argv[2])
 
-N_array,M_array,inds,vals = array_maker(*[int(s) for s in sys.argv[3:]])
+N_array,M_array,inds,vals = array_maker(*[int(s) for s in sys.argv[2:]])
 
 model_type = sys.argv[1]
 for packed in inds:
@@ -48,11 +48,17 @@ for packed in inds:
     start_time = time.perf_counter()
     states, trace = run(random.PRNGKey(0),sharded_data,pass_data)
     end_time = time.perf_counter()
-    # print('%s,%s\t%s,%s'%(str(N),str(M),str(start_time),str(end_time)))
+    print('%s,%s\t%s,%s'%(str(N),str(M),str(start_time),str(end_time)))
     # runtime = timeit('run(random.PRNGKey(0), (sharded_X, sharded_y))',number=1)
 
     n_param = len(dt['param_keys'])
-    dt.create_dataset('runtime_%i_GPU'%N_GPU,data=float(end_time - start_time))
+    if 'runtime_%i_GPU'%N_GPU in dt:
+        del dt['runtime_%i_GPU'%N_GPU]
+    else:
+        dt.create_dataset('runtime_%i_GPU'%N_GPU,data=float(end_time - start_time))
     for i in range(n_param):
         k = dt['param_keys'][i]
-        dt['errors'].create_dataset('%i_%i_GPU'%(k,N_GPU),data=(states[i].mean(0) - dt['params'][k][()]))
+        if 'errors/%s_%i_GPU'%(k,N_GPU) in dt:
+            del dt['errors']['%s_%i_GPU'%(k,N_GPU)]
+        else:
+            dt['errors'].create_dataset('%s_%i_GPU'%(k,N_GPU),data=(states[i].mean(0) - dt['params'][k][()]))
