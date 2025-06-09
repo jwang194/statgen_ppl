@@ -9,17 +9,20 @@ import h5py
 
 from utils import array_maker
 
-N_array,M_array,inds,vals = array_maker(*[int(s) for s in sys.argv[1:]])
+N_array,M_array,inds,vals = array_maker(*[int(s) for s in sys.argv[1:-2]])
 
+scale = sys.argv[-2] == 'True'
+smart_init = sys.argv[-1] == 'True'
 for packed in inds:
     i,j = [int(p) for p in packed.split(',')]
     N = N_array[i]
     M = M_array[j]
 
-    if os.path.isfile('data/lmm/%s_%s.hdf5'%(N,M)):
+    dt_file = 'data/%s/%s_%s%s.hdf5'%(model_type,N,M,'_scaled' if scale else '')
+    if os.path.isfile(dt_file):
         continue
 
-    dt = h5py.File('data/lmm/%s_%s.hdf5'%(N,M),'w')
+    dt = h5py.File(dt_file,'w')
 
     s_g = np.sqrt(np.random.uniform(0,1))
     s_e = np.sqrt(1-s_g**2)
@@ -35,6 +38,7 @@ for packed in inds:
     dt.create_group('params')
     dt.create_group('data')
     dt.create_group('errors')
+    dt.create_group('states')
     param_keys = ('s_g','s_e','mu_beta','beta')
     dt.create_dataset('param_keys',data=param_keys)
     data_keys = ('X','y')
