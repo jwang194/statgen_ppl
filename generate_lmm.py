@@ -18,7 +18,7 @@ for packed in inds:
     N = N_array[i]
     M = M_array[j]
 
-    dt_file = 'data/%s/%s_%s%s.hdf5'%(model_type,N,M,'_scaled' if scale else '')
+    dt_file = 'data/lmm/%s_%s%s.hdf5'%(N,M,'_scaled' if scale else '')
     if os.path.isfile(dt_file):
         continue
 

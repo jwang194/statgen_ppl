@@ -52,7 +52,7 @@ for packed in inds:
         run = run_wrapper(model_type,model_dict[model_type])
 
     start_time = time.perf_counter()
-    states, trace = run(random.PRNGKey(0),sharded_data,pass_data)
+    states, trace = run(random.key(0),sharded_data,pass_data)
     end_time = time.perf_counter()
     print('%s,%s\t%s-%s'%(str(N),str(M),str(start_time),str(end_time)))
     # runtime = timeit('run(random.PRNGKey(0), (sharded_X, sharded_y))',number=1)
