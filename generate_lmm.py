@@ -9,18 +9,10 @@ import h5py
 
 from utils import array_maker
 
-N_array,M_array,inds,vals = array_maker(*[int(s) for s in sys.argv[1:-2]])
-
-scale = sys.argv[-2] == 'True'
-smart_init = sys.argv[-1] == 'True'
-for packed in inds:
-    i,j = [int(p) for p in packed.split(',')]
-    N = N_array[i]
-    M = M_array[j]
-
+def generate_lmm(N,M,scale,smart_init):
     dt_file = 'data/lmm/%s_%s%s.hdf5'%(N,M,'_scaled' if scale else '')
     if os.path.isfile(dt_file):
-        continue
+        return
 
     dt = h5py.File(dt_file,'w')
 
@@ -51,3 +43,14 @@ for packed in inds:
     for d,dk in zip((X,y),data_keys):
         dt['data'].create_dataset(dk,data=d)
 
+if __name__ == '__main__':
+    N_array,M_array,inds,vals = array_maker(*[int(s) for s in sys.argv[1:-2]])
+
+    scale = sys.argv[-2] == 'True'
+    smart_init = sys.argv[-1] == 'True'
+
+    for packed in inds:
+        i,j = [int(p) for p in packed.split(',')]
+        N = N_array[i]
+        M = M_array[j]
+        generate_lmm(N,M,scale,smart_init)

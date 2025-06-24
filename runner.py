@@ -29,7 +29,7 @@ Root = tfed.JointDistributionCoroutine.Root
 N_RESULT = 10**3
 N_BURNIN = 10**3
 
-def run_wrapper(model_wrapper):
+def run_wrapper(model_name,model_wrapper):
     # set up the sharded markov chain
     @functools.partial(jax.pmap, axis_name='data', in_axes=(None, 0, 0), out_axes=None)
     # @jax.default_matmul_precision('tensorfloat32')
@@ -69,26 +69,29 @@ def smart_run_wrapper(model_name,model_wrapper,raw_data,N_BURNIN=N_BURNIN,N_RESU
                 jnp.sqrt(1-beta_estimates.var()),
                 beta_estimates.mean(),
                 beta_estimates)
+        print('Computed initial state based on GWAS.')
     elif model_name == 'spsl':
         struct_tuple = structtuple(['var0','var1','var2','var3'])
         X,y = data
         beta_estimates = jnp.array([(X[:,i].T @ X[:,i])**(-1) * X[:,i].T @ y for i in range(M)])
-        initial_state = initial_state._replace(
+        initial_state = struct_tuple(
                 0.2,
                 beta_estimates.std(),
                 jnp.sqrt(1-beta_estimates.var()),
                 beta_estimates)
+    else:
+        initial_state = None
     # set up the sharded markov chain
     @functools.partial(jax.pmap, axis_name='data', in_axes=(None, 0, 0), out_axes=None)
     # @jax.default_matmul_precision('tensorfloat32')
-    def run(seed, data, pass_data):
+    def run(seed, data, pass_data, initial_state=initial_state):
         model_fn = model_wrapper(*data)
         model = tfed.JointDistributionCoroutine(model_fn)
 
         init_seed, sample_seed = random.split(seed)
 
         n_comp = len(pass_data)
-        if model_name in ['lmm','spsl']:
+        if initial_state is None:
             initial_state = model.sample(seed=init_seed)[:-n_comp] # throw away `y`
 
         def target_log_prob(*params):
@@ -96,6 +99,7 @@ def smart_run_wrapper(model_name,model_wrapper,raw_data,N_BURNIN=N_BURNIN,N_RESU
 
         kernel = tfp.mcmc.NoUTurnSampler(target_log_prob, 1e-3)
 
+        print(initial_state)
         states, trace = tfm.sample_chain(num_results=N_RESULT,
                               current_state=initial_state,
                               kernel=kernel,
